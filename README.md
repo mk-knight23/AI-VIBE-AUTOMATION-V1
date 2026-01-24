@@ -1,6 +1,6 @@
 # Agentify - AI Agent Builder Platform
 
-Build powerful AI agents with drag-and-drop simplicity. Create, deploy, and manage custom AI workflows.
+Build powerful AI agents with drag-and-drop simplicity. Create , deploy, and manage custom AI workflows.
 
 ![Agentify](https://img.shields.io/badge/version-1.0.0-purple)
 ![Next.js](https://img.shields.io/badge/Next.js-15-black)
