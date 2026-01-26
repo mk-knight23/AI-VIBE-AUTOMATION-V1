@@ -112,69 +112,58 @@ export type AgentNode = Node<AgentNodeData, NodeType>;
 // Typed edge for React Flow
 export type AgentEdge = Edge;
 
-// Agent definition
-export interface Agent {
-    _id: string;
+// Workflow definition (previously Agent)
+export interface Workflow {
+    id: string;
     userId: string;
+    workspaceId: string;
     name: string;
-    description?: string;
-    icon: string;
+    description?: string | null;
     nodes: AgentNode[];
     edges: AgentEdge[];
-    isPublished: boolean;
-    lastRun?: number;
+    isActive: boolean;
+    isPublic: boolean;
     runCount: number;
-    createdAt: number;
-    updatedAt: number;
+    lastRunAt?: string | Date | null;
+    createdAt: string | Date;
+    updatedAt: string | Date;
 }
 
 // Execution status
-export type ExecutionStatus = "pending" | "running" | "completed" | "failed" | "cancelled";
+export type ExecutionStatus = "PENDING" | "RUNNING" | "COMPLETED" | "FAILED" | "CANCELLED";
 
 // Execution log entry
 export interface ExecutionLog {
-    nodeId: string;
-    type: "info" | "error" | "success" | "warning";
+    id: string;
+    executionId: string;
+    nodeId?: string | null;
+    level: "INFO" | "WARN" | "ERROR" | "DEBUG";
     message: string;
-    timestamp: number;
-    data?: unknown;
+    timestamp: string | Date;
+    data?: any;
 }
 
 // Execution definition
 export interface Execution {
-    _id: string;
-    agentId: string;
+    id: string;
+    workflowId: string;
     userId: string;
     status: ExecutionStatus;
-    input?: unknown;
-    output?: unknown;
-    logs: ExecutionLog[];
-    tokenUsed: number;
-    startedAt: number;
-    completedAt?: number;
-    error?: string;
-}
-
-// Chat message
-export interface ChatMessage {
-    _id: string;
-    executionId: string;
-    role: "user" | "assistant" | "system";
-    content: string;
-    timestamp: number;
-    nodeId?: string;
+    input?: any;
+    output?: any;
+    startedAt?: string | Date | null;
+    completedAt?: string | Date | null;
+    duration?: number | null; // ms
+    error?: string | null;
+    logs?: ExecutionLog[];
 }
 
 // User definition
 export interface User {
-    _id: string;
-    clerkId: string;
+    id: string;
     email: string;
-    name?: string;
-    imageUrl?: string;
-    plan: "free" | "pro" | "enterprise";
-    tokenUsage: number;
-    tokenLimit: number;
-    createdAt: number;
-    updatedAt: number;
+    name?: string | null;
+    image?: string | null;
+    createdAt: string | Date;
+    updatedAt: string | Date;
 }

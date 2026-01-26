@@ -9,6 +9,7 @@ type AINodeData = {
     model?: string;
     provider?: "openai" | "anthropic" | "google";
     systemPrompt?: string;
+    executionStatus?: "idle" | "running" | "success" | "error";
 };
 
 type AINodeProps = {
@@ -25,15 +26,34 @@ function AINode({ data, selected }: AINodeProps) {
 
     const gradient = providerColors[data.provider || "openai"];
 
+    const statusStyles = {
+        idle: "",
+        running: "border-violet-500 shadow-[0_0_15px_rgba(168,85,247,0.5)] animate-pulse",
+        success: "border-emerald-500/50 shadow-[0_0_10px_rgba(16,185,129,0.2)]",
+        error: "border-rose-500/50 shadow-[0_0_10px_rgba(239,68,68,0.2)]",
+    };
+
     return (
         <div
             className={`
         relative px-4 py-3 rounded-xl border min-w-[180px]
         glass-card
         ${selected ? "border-violet-500 shadow-lg shadow-violet-500/20" : "border-white/10 hover:border-violet-500/50"}
+        ${statusStyles[data.executionStatus || "idle"]}
         transition-all duration-200 hover-lift
       `}
         >
+            {data.executionStatus === "success" && (
+                <div className="absolute -top-1.5 -right-1.5 h-4 w-4 rounded-full bg-emerald-500 flex items-center justify-center border-2 border-background shadow-lg z-10">
+                    <div className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
+                </div>
+            )}
+            {data.executionStatus === "error" && (
+                <div className="absolute -top-1.5 -right-1.5 h-4 w-4 rounded-full bg-rose-500 flex items-center justify-center border-2 border-background shadow-lg z-10">
+                    <div className="h-1.5 w-1.5 rounded-full bg-white" />
+                </div>
+            )}
+
             <Handle
                 type="target"
                 position={Position.Top}

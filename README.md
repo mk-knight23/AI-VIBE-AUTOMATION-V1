@@ -10,11 +10,12 @@ Build powerful AI agents with drag-and-drop simplicity. Create , deploy, and man
 ## 🚀 Features
 
 - **Visual Flow Builder** - Drag-and-drop interface powered by React Flow
-- **Multi-Provider AI** - Support for OpenAI, Anthropic, and Google
-- **Real-time Database** - Convex for instant sync and reactivity
+- **Multi-Provider AI** - Support for OpenAI, Anthropic, and Google (Gemini)
+- **Background Jobs** - Inngest for reliable workflow execution and retries
 - **Enterprise Security** - Arcjet rate limiting and bot protection  
-- **Modern Auth** - Clerk authentication with social login
+- **Modern Auth** - BetterAuth for secure, modern authentication
 - **Streaming Responses** - Real-time AI output with Vercel AI SDK
+- **Monetization** - Polar SDK for subscriptions and payments
 
 ## 📦 Tech Stack
 
@@ -22,8 +23,10 @@ Build powerful AI agents with drag-and-drop simplicity. Create , deploy, and man
 |----------|------------|
 | Framework | Next.js 15 (App Router) |
 | Language | TypeScript |
-| Database | Convex |
-| Auth | Clerk |
+| Database | PostgreSQL (Neon) with Prisma ORM |
+| Auth | BetterAuth |
+| Background Jobs | Inngest |
+| Payments | Polar SDK |
 | UI | shadcn/ui, Tailwind CSS |
 | Flow Editor | React Flow (XYFlow) |
 | AI | Vercel AI SDK |
@@ -35,8 +38,9 @@ Build powerful AI agents with drag-and-drop simplicity. Create , deploy, and man
 
 - Node.js 18+
 - npm or pnpm
-- Convex account (optional - can run locally)
-- Clerk account (for authentication)
+- Neon Database (PostgreSQL)
+- Inngest (for background jobs)
+- Polar (for payments)
 - AI provider API keys (OpenAI, Anthropic, or Google)
 
 ### Installation
@@ -49,33 +53,36 @@ cd agentify
 # Install dependencies
 npm install
 
-# Copy environment variables
-cp .env.example .env.local
+# Setup Prisma
+npx prisma generate
+npx prisma db push
 
-# Start Convex (local development)
-npx convex dev
-
-# Start the development server (in another terminal)
+# Start the development server
 npm run dev
 ```
 
 ### Environment Variables
 
-Create a `.env.local` file with:
-
 ```env
-# Convex
-CONVEX_DEPLOYMENT=local
-NEXT_PUBLIC_CONVEX_URL=http://127.0.0.1:3210
+# Database (Neon/Postgres)
+DATABASE_URL=postgresql://...
 
-# Clerk (https://clerk.com)
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
-CLERK_SECRET_KEY=sk_test_...
+# Auth (BetterAuth)
+BETTER_AUTH_SECRET=...
+BETTER_AUTH_URL=http://localhost:3000
 
-# Arcjet (https://arcjet.com)  
+# Inngest
+INNGEST_EVENT_KEY=...
+INNGEST_SIGNING_KEY=...
+
+# Polar (Payments)
+POLAR_ACCESS_TOKEN=...
+NEXT_PUBLIC_POLAR_ORGANIZATION_ID=...
+
+# Arcjet (Security)  
 ARCJET_KEY=ajkey_...
 
-# AI Providers (at least one required)
+# AI Providers
 OPENAI_API_KEY=sk-...
 ANTHROPIC_API_KEY=sk-ant-...
 GOOGLE_GENERATIVE_AI_API_KEY=...
@@ -85,20 +92,17 @@ GOOGLE_GENERATIVE_AI_API_KEY=...
 
 ```
 agentify/
-├── convex/                 # Backend (Convex functions)
-│   ├── schema.ts          # Database schema
-│   ├── agents.ts          # Agent CRUD
-│   ├── executions.ts      # Execution tracking
-│   └── users.ts           # User management
+├── prisma/                # Database schema and migrations
 ├── src/
 │   ├── app/               # Next.js App Router
-│   │   ├── (auth)/        # Auth pages
+│   │   ├── (auth)/        # BetterAuth pages
 │   │   ├── (dashboard)/   # Dashboard layout
-│   │   └── api/           # API routes
+│   │   └── api/           # API routes (Inngest, Auth, Webhooks)
+│   ├── actions/           # Server actions (Workflows, Payments)
 │   ├── components/
 │   │   ├── agent-builder/ # React Flow components
 │   │   └── ui/            # shadcn components
-│   ├── lib/               # Utilities
+│   ├── lib/               # Utilities (Prisma, Inngest, AI, Auth)
 │   └── types/             # TypeScript types
 └── public/                # Static assets
 ```
@@ -155,9 +159,7 @@ Content-Type: application/json
 }
 ```
 
-### Webhooks
-
-Configure Clerk webhook at `/api/webhook/clerk` for user sync.
+Configure webhooks for Polar and other services in `src/app/api/webhooks`.
 
 ## 🔒 Security
 
@@ -176,4 +178,4 @@ Contributions welcome! Please read our contributing guidelines first.
 
 ---
 
-Built with ❤️ using Next.js, Convex, and React Flow
+Built with ❤️ using Next.js, Prisma, and React Flow

@@ -1,26 +1,38 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery, useMutation } from "convex/react";
-import { api } from "@convex/_generated/api";
-import { Id } from "@convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Search, Sparkles, Users, Loader2, ArrowRight } from "lucide-react";
-
-// Helper to get demo user ID (same as in agents)
-const DEMO_USER_ID = "demo_user_local_dev";
+import { Search, Sparkles, Users, Loader2 } from "lucide-react";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { listTemplates, cloneTemplate } from "@/actions/templates";
+import { useRouter } from "next/navigation";
 
 export default function TemplatesPage() {
-    const templates = useQuery(api.templates.list) || [];
-    const cloneTemplate = useMutation(api.templates.cloneToAgent);
-    const users = useQuery(api.users.getByClerkId, { clerkId: DEMO_USER_ID });
-
+    const router = useRouter();
     const [search, setSearch] = useState("");
-    const [cloning, setCloning] = useState<string | null>(null);
+    const [cloningId, setCloningId] = useState<string | null>(null);
+
+    const { data: templates = [], isLoading } = useQuery({
+        queryKey: ["templates"],
+        queryFn: () => listTemplates(),
+    });
+
+    const { mutate: handleClone, isPending } = useMutation({
+        mutationFn: (id: string) => cloneTemplate(id),
+        onMutate: (id) => setCloningId(id),
+        onSuccess: (workflow) => {
+            toast.success("Template cloned successfully!");
+            router.push(`/dashboard/workflows/${workflow.id}`);
+        },
+        onError: (error: any) => {
+            toast.error(error.message || "Failed to clone template");
+            setCloningId(null);
+        },
+    });
 
     const filteredTemplates = templates.filter(
         (template) =>
@@ -29,32 +41,18 @@ export default function TemplatesPage() {
             template.category.toLowerCase().includes(search.toLowerCase())
     );
 
-    const categories = [...new Set(templates.map((t) => t.category))];
+    const categories = Array.from(new Set(templates.map((t) => t.category)));
 
-    const handleClone = async (templateId: Id<"templates">) => {
-        if (!users) {
-            toast.error("User not found. Please refresh the page.");
-            return;
-        }
-
-        setCloning(templateId);
-        try {
-            await cloneTemplate({
-                templateId,
-                userId: users._id,
-            });
-            toast.success("Template cloned! <Check My Agents to find it.>");
-        } catch (error) {
-            toast.error("Failed to clone template");
-            console.error(error);
-        } finally {
-            setCloning(null);
-        }
-    };
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center min-h-[400px]">
+                <Loader2 className="h-8 w-8 animate-spin text-violet-500" />
+            </div>
+        );
+    }
 
     return (
         <div className="p-6 md:p-8 space-y-8">
-            {/* Header */}
             <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">
                     <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center">
@@ -67,7 +65,6 @@ export default function TemplatesPage() {
                 </p>
             </div>
 
-            {/* Search */}
             <div className="relative max-w-md">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -78,7 +75,6 @@ export default function TemplatesPage() {
                 />
             </div>
 
-            {/* Templates by Category */}
             {templates.length === 0 ? (
                 <Card className="glass-card border-dashed border-2 border-white/10">
                     <CardContent className="py-16 flex flex-col items-center justify-center">
@@ -93,7 +89,6 @@ export default function TemplatesPage() {
                 </Card>
             ) : (
                 <div className="space-y-10">
-                    {/* Featured Templates */}
                     {filteredTemplates.filter((t) => t.featured).length > 0 && (
                         <div>
                             <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
@@ -105,17 +100,16 @@ export default function TemplatesPage() {
                                     .filter((t) => t.featured)
                                     .map((template) => (
                                         <TemplateCard
-                                            key={template._id}
+                                            key={template.id}
                                             template={template}
-                                            onClone={handleClone}
-                                            isCloning={cloning === template._id}
+                                            onClone={() => handleClone(template.id)}
+                                            isCloning={isPending && cloningId === template.id}
                                         />
                                     ))}
                             </div>
                         </div>
                     )}
 
-                    {/* Templates by Category */}
                     {categories.map((category) => {
                         const categoryTemplates = filteredTemplates.filter(
                             (t) => t.category === category && !t.featured
@@ -130,10 +124,10 @@ export default function TemplatesPage() {
                                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                                     {categoryTemplates.map((template) => (
                                         <TemplateCard
-                                            key={template._id}
+                                            key={template.id}
                                             template={template}
-                                            onClone={handleClone}
-                                            isCloning={cloning === template._id}
+                                            onClone={() => handleClone(template.id)}
+                                            isCloning={isPending && cloningId === template.id}
                                         />
                                     ))}
                                 </div>
@@ -147,23 +141,14 @@ export default function TemplatesPage() {
 }
 
 interface TemplateCardProps {
-    template: {
-        _id: Id<"templates">;
-        name: string;
-        description: string;
-        icon: string;
-        category: string;
-        featured: boolean;
-        usageCount: number;
-    };
-    onClone: (id: Id<"templates">) => void;
+    template: any;
+    onClone: () => void;
     isCloning: boolean;
 }
 
 function TemplateCard({ template, onClone, isCloning }: TemplateCardProps) {
     return (
         <Card className="group glass-card hover:border-violet-500/30 transition-all duration-300 hover-lift relative overflow-hidden">
-            {/* Hover Glow Effect */}
             <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
 
             <CardHeader className="pb-4 relative z-10">
@@ -202,7 +187,7 @@ function TemplateCard({ template, onClone, isCloning }: TemplateCardProps) {
                     </div>
                     <Button
                         size="sm"
-                        onClick={() => onClone(template._id)}
+                        onClick={onClone}
                         disabled={isCloning}
                         className="gradient-bg glow hover:opacity-90 transition-all cursor-pointer text-xs h-8"
                     >

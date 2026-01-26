@@ -1,0 +1,196 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// --- Better Auth Models ---
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+  
+  // Custom Agentify fields
+  workspaces    WorkspaceMember[]
+  workflows     Workflow[]
+  executions    Execution[]
+  credentials   Credential[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  expiresAt DateTime
+  token     String   @unique
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  userId                String
+  accountId             String
+  providerId            String
+  accessToken           String?
+  refreshToken          String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  idToken               String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+// --- Agentify Core Models ---
+
+model Workspace {
+  id          String            @id @default(cuid())
+  name        String
+  slug        String            @unique
+  imageUrl    String?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  members     WorkspaceMember[]
+  workflows   Workflow[]
+  credentials Credential[]
+  
+  // Billing
+  plan        String            @default("FREE") // FREE, PRO, ENTERPRISE
+  usageLimit  Int               @default(100)
+}
+
+model WorkspaceMember {
+  id          String    @id @default(cuid())
+  workspaceId String
+  userId      String
+  role        String    @default("MEMBER") // OWNER, ADMIN, MEMBER
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, userId])
+}
+
+model Workflow {
+  id          String      @id @default(cuid())
+  name        String
+  description String?
+  workspaceId String
+  userId      String
+  
+  // Canvas State (React Flow compliant JSON)
+  nodes       Json?       @default("[]")
+  edges       Json?       @default("[]")
+  
+  isActive    Boolean     @default(false)
+  isPublic    Boolean     @default(false)
+  
+  // Webhook Configuration
+  webhookToken   String?  @unique @default(uuid())
+  webhookEnabled Boolean  @default(false)
+  
+  // Schedule Configuration  
+  scheduleEnabled  Boolean  @default(false)
+  scheduleCron     String?  // Cron expression (e.g., "0 9 * * *" for 9am daily)
+  scheduleTimezone String   @default("UTC")
+  
+  runCount    Int         @default(0)
+  lastRunAt   DateTime?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  
+  workspace   Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  executions  Execution[]
+}
+
+
+model Execution {
+  id          String         @id @default(cuid())
+  workflowId  String
+  userId      String
+  status      String         @default("PENDING") // PENDING, RUNNING, COMPLETED, FAILED, CANCELLED
+  
+  input       Json?
+  output      Json?
+  
+  startedAt   DateTime?
+  completedAt DateTime?
+  duration    Int?           // ms
+  
+  error       String?
+  
+  workflow    Workflow       @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  logs        ExecutionLog[]
+}
+
+model ExecutionLog {
+  id          String    @id @default(cuid())
+  executionId String
+  nodeId      String?
+  level       String    @default("INFO") // INFO, WARN, ERROR, DEBUG
+  message     String
+  data        Json?
+  createdAt   DateTime  @default(now())
+  execution   Execution @relation(fields: [executionId], references: [id], onDelete: Cascade)
+}
+
+model Credential {
+  id          String    @id @default(cuid())
+  name        String
+  type        String    // e.g., "openai", "slack", "discord"
+  workspaceId String
+  userId      String
+  
+  // Encrypted value
+  encrypted   String
+  iv          String
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, name])
+}
+
+model WorkflowTemplate {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  icon        String
+  category    String
+  nodes       Json?    @default("[]")
+  edges       Json?    @default("[]")
+  featured    Boolean  @default(false)
+  usageCount  Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+

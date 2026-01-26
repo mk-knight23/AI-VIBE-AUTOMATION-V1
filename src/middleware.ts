@@ -1,46 +1,35 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { auth } from "@/lib/auth";
 
-// Public routes that don't require authentication
-const publicRoutes = [
-    "/",
-    "/sign-in",
-    "/sign-up",
-    "/api/webhook",
-];
+export async function middleware(request: NextRequest) {
+    // Admin bypass mode - set ADMIN_MODE=true in .env.local for full access
+    const isAdminMode = process.env.ADMIN_MODE === "true";
 
-// Check if a path matches any public route
-function isPublicRoute(path: string): boolean {
-    return publicRoutes.some((route) => path.startsWith(route));
-}
-
-export function middleware(request: NextRequest) {
-    const path = request.nextUrl.pathname;
-
-    // Skip for static files and internal paths
-    if (
-        path.startsWith("/_next") ||
-        path.startsWith("/api/_") ||
-        path.includes(".")
-    ) {
+    if (isAdminMode) {
+        // Skip all auth checks in admin mode
         return NextResponse.next();
     }
 
-    // Skip auth for public routes
-    if (isPublicRoute(path)) {
-        return NextResponse.next();
+    const session = await auth.api.getSession({
+        headers: request.headers
+    });
+
+    const isDashboard = request.nextUrl.pathname.startsWith("/dashboard");
+    const isAuthPage = request.nextUrl.pathname.startsWith("/sign-in") ||
+        request.nextUrl.pathname.startsWith("/sign-up");
+
+    if (isDashboard && !session) {
+        return NextResponse.redirect(new URL("/sign-in", request.url));
     }
 
-    // For protected routes, we'll rely on Clerk's built-in middleware
-    // This is a simple passthrough - Clerk handles auth in layout/pages
+    if (isAuthPage && session) {
+        return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
+
     return NextResponse.next();
 }
 
 export const config = {
-    matcher: [
-        // Skip Next.js internals and all static files
-        "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
-        // Always run for API routes
-        "/(api|trpc)(.*)",
-    ],
+    matcher: ["/dashboard/:path*", "/sign-in", "/sign-up"],
 };

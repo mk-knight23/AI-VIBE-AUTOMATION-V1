@@ -1,14 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { streamText } from "ai";
-import { ConvexHttpClient } from "convex/browser";
-import { api } from "@convex/_generated/api";
-import { Id } from "@convex/_generated/dataModel";
+import { prisma } from "@/lib/prisma";
 import { getAIModel, AIProvider } from "@/lib/ai/providers";
 import { ajExecute } from "@/lib/arcjet";
 
-const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
-
-export const runtime = "edge";
+export const runtime = "nodejs"; // Prisma doesn't support Edge runtime easily without Accelerate
 
 export async function POST(req: NextRequest) {
     try {
@@ -36,37 +32,39 @@ export async function POST(req: NextRequest) {
             }
         }
 
-        const { agentId, message } = await req.json();
+        const { workflowId, message } = await req.json();
 
-        if (!agentId || !message) {
+        if (!workflowId || !message) {
             return NextResponse.json(
-                { error: "Missing agentId or message" },
+                { error: "Missing workflowId or message" },
                 { status: 400 }
             );
         }
 
-        // Get the agent
-        const agent = await convex.query(api.agents.getById, {
-            agentId: agentId as Id<"agents">,
+        // Get the workflow
+        const workflow = await prisma.workflow.findUnique({
+            where: { id: workflowId },
         });
 
-        if (!agent) {
-            return NextResponse.json({ error: "Agent not found" }, { status: 404 });
+        if (!workflow) {
+            return NextResponse.json({ error: "Workflow not found" }, { status: 404 });
         }
 
+        const nodes = workflow.nodes as any[];
+
         // Find the AI node in the workflow
-        const aiNode = agent.nodes.find((node: any) => node.type === "ai");
+        const aiNode = nodes.find((node: any) => node.type === "ai");
 
         if (!aiNode) {
             return NextResponse.json(
-                { error: "No AI node found in agent workflow" },
+                { error: "No AI node found in workflow" },
                 { status: 400 }
             );
         }
 
         // Get AI configuration from the node
-        const provider = (aiNode.data.provider as AIProvider) || "openai";
-        const model = (aiNode.data.model as string) || "gpt-4o-mini";
+        const provider = (aiNode.data.provider as AIProvider) || "google"; // Default to google since we set up Gemini
+        const model = (aiNode.data.model as string) || "gemini-1.5-flash";
         const systemPrompt =
             (aiNode.data.systemPrompt as string) ||
             "You are a helpful AI assistant.";
@@ -86,9 +84,9 @@ export async function POST(req: NextRequest) {
         // Return streaming response
         return result.toTextStreamResponse();
     } catch (error) {
-        console.error("Agent execution error:", error);
+        console.error("Workflow execution error:", error);
         return NextResponse.json(
-            { error: "Failed to execute agent" },
+            { error: "Failed to execute workflow" },
             { status: 500 }
         );
     }

@@ -7,7 +7,8 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { TokenDisplay } from "@/components/TokenDisplay";
+import { useAuth } from "@/hooks/use-auth";
+
 import {
     Bot,
     ChevronLeft,
@@ -62,6 +63,7 @@ const sidebarLinks = [
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
     const pathname = usePathname();
     const [collapsed, setCollapsed] = useState(false);
+    const userSession = useAuth();
 
     const SidebarContent = () => (
         <div className="flex h-full flex-col">
@@ -132,18 +134,26 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
             {/* User Section with Token Display */}
             <div className="border-t border-white/5 p-4 space-y-4">
-                {/* Token Usage */}
-                <TokenDisplay collapsed={collapsed} />
+
 
                 {/* User Info */}
                 <div className={cn("flex items-center gap-3", collapsed && "justify-center")}>
                     <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center shadow-lg shadow-violet-500/20">
-                        <User className="h-4 w-4 text-white" />
+                        {userSession?.data?.user?.image ? (
+                            <img src={userSession.data.user.image} alt={userSession.data.user.name || "User"} className="h-full w-full rounded-xl object-cover" />
+                        ) : (
+                            <User className="h-4 w-4 text-white" />
+                        )}
                     </div>
                     {!collapsed && (
                         <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium truncate">Demo User</p>
-                            <p className="text-xs text-muted-foreground">demo@agentify.local</p>
+                            <div className="flex items-center gap-2">
+                                <p className="text-sm font-medium truncate">{userSession?.data?.user?.name || "User"}</p>
+                                {process.env.NEXT_PUBLIC_ADMIN_MODE === "true" && (
+                                    <span className="text-[10px] bg-violet-500/20 text-violet-300 px-1.5 py-0.5 rounded border border-violet-500/30">ADMIN</span>
+                                )}
+                            </div>
+                            <p className="text-xs text-muted-foreground truncate">{userSession?.data?.user?.email || ""}</p>
                         </div>
                     )}
                 </div>
