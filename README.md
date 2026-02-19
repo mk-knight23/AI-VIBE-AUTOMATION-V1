@@ -121,7 +121,10 @@ GOOGLE_GENERATIVE_AI_API_KEY=...
 
 ---
 
-## 📂 Project Structure
+## 📁 Project Structure
+
+<details>
+<summary>View Detailed Directory Map</summary>
 
 ```
 agentify/
@@ -139,10 +142,14 @@ agentify/
 │   └── types/             # TypeScript types
 └── public/                # Static assets
 ```
+</details>
 
 ---
 
 ## 🎨 Node Types
+
+<details>
+<summary>View Available Workflow Nodes</summary>
 
 | Node | Description |
 |------|-------------|
@@ -156,9 +163,14 @@ agentify/
 | **Variable** | Set/get variables |
 | **End** | Terminate workflow |
 
+</details>
+
 ---
 
 ## 🚢 Deployment
+
+<details>
+<summary>Deployment Guide (Vercel & Docker)</summary>
 
 ### Vercel (Recommended)
 
@@ -181,10 +193,14 @@ COPY . .
 RUN npm run build
 CMD ["npm", "start"]
 ```
+</details>
 
 ---
 
 ## 📖 API Reference
+
+<details>
+<summary>REST API Documentation</summary>
 
 ### Execute Agent
 
@@ -197,6 +213,7 @@ Content-Type: application/json
   "message": "User input message"
 }
 ```
+</details>
 
 ---
 
@@ -206,6 +223,14 @@ Content-Type: application/json
 - Bot detection and blocking
 - Input validation and sanitization
 - Secure API routes with middleware
+
+---
+
+## 🚀 Call to Action
+
+- **Star this repo** if you find it useful!
+- **Follow for updates** on the AI-VIBE Ecosystem.
+- **Contribute** by opening issues or PRs.
 
 ---
 
@@ -220,3 +245,4 @@ MIT License - see [LICENSE](LICENSE) for details.
 <p align="center">
   <i>Built with ❤️ using Next.js, Prisma, and React Flow</i>
 </p>
+
