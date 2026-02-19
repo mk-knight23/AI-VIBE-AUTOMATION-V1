@@ -2,34 +2,42 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
 
+/**
+ * Security middleware with authentication enforcement
+ * NOTE: Admin bypass mode has been removed for production security.
+ * For local development, use proper authentication.
+ */
 export async function middleware(request: NextRequest) {
-    // Admin bypass mode - set ADMIN_MODE=true in .env.local for full access
-    const isAdminMode = process.env.ADMIN_MODE === "true";
+  const session = await auth.api.getSession({
+    headers: request.headers,
+  });
 
-    if (isAdminMode) {
-        // Skip all auth checks in admin mode
-        return NextResponse.next();
-    }
+  const isDashboard = request.nextUrl.pathname.startsWith("/dashboard");
+  const isAuthPage =
+    request.nextUrl.pathname.startsWith("/sign-in") ||
+    request.nextUrl.pathname.startsWith("/sign-up");
 
-    const session = await auth.api.getSession({
-        headers: request.headers
-    });
+  if (isDashboard && !session) {
+    return NextResponse.redirect(new URL("/sign-in", request.url));
+  }
 
-    const isDashboard = request.nextUrl.pathname.startsWith("/dashboard");
-    const isAuthPage = request.nextUrl.pathname.startsWith("/sign-in") ||
-        request.nextUrl.pathname.startsWith("/sign-up");
+  if (isAuthPage && session) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
 
-    if (isDashboard && !session) {
-        return NextResponse.redirect(new URL("/sign-in", request.url));
-    }
+  // Add security headers
+  const response = NextResponse.next();
+  response.headers.set("X-Frame-Options", "DENY");
+  response.headers.set("X-Content-Type-Options", "nosniff");
+  response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  response.headers.set(
+    "Content-Security-Policy",
+    "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'none';",
+  );
 
-    if (isAuthPage && session) {
-        return NextResponse.redirect(new URL("/dashboard", request.url));
-    }
-
-    return NextResponse.next();
+  return response;
 }
 
 export const config = {
-    matcher: ["/dashboard/:path*", "/sign-in", "/sign-up"],
+  matcher: ["/dashboard/:path*", "/sign-in", "/sign-up"],
 };

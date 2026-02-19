@@ -1,13 +1,47 @@
-# Agentify - AI Agent Builder Platform
+# 🤖 AI-VIBE-AUTOMATION-V1 | Agentify
 
-Build powerful AI agents with drag-and-drop simplicity. Create , deploy, and manage custom AI workflows.
+<p align="center">
+  <img src="https://img.shields.io/badge/AI--VIBE-AUTOMATION--V1-black?style=for-the-badge&logo=next.js&logoColor=white" alt="AI Vibe Project">
+  <br>
+  <b>Build powerful AI agents with drag-and-drop simplicity. Create, deploy, and manage custom AI workflows.</b>
+</p>
 
-![Agentify](https://img.shields.io/badge/version-1.0.0-purple)
-![Next.js](https://img.shields.io/badge/Next.js-15-black)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
+<p align="center">
+  <img src="https://img.shields.io/badge/version-1.0.0-purple" alt="Version">
+  <img src="https://img.shields.io/badge/Next.js-15-black?logo=next.js&logoColor=white" alt="Next.js">
+  <img src="https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript&logoColor=white" alt="TypeScript">
+  <img src="https://img.shields.io/badge/License-MIT-green" alt="License: MIT">
+</p>
 
-## 🚀 Features
+---
+
+## 🗺️ Quick Navigation
+
+- [✨ Features](#-features)
+- [🛠️ Tech Stack](#%EF%B8%8F-tech-stack)
+- [🛠️ Getting Started](#%EF%B8%8F-getting-started)
+- [📁 Project Structure](#-project-structure)
+- [🎨 Node Types](#-node-types)
+- [🚢 Deployment](#-deployment)
+- [📖 API Reference](#-api-reference)
+- [🔒 Security](#-security)
+
+---
+
+## 🛠️ Engineered With
+
+<p align="left">
+  <a href="https://nextjs.org"><img src="https://skillicons.dev/icons?i=nextjs" alt="Next.js"></a>
+  <a href="https://react.dev"><img src="https://skillicons.dev/icons?i=react" alt="React"></a>
+  <a href="https://prisma.io"><img src="https://skillicons.dev/icons?i=prisma" alt="Prisma"></a>
+  <a href="https://inngest.com"><img src="https://img.shields.io/badge/Jobs-Inngest-FF3E00" alt="Inngest"></a>
+  <a href="https://tailwindcss.com"><img src="https://skillicons.dev/icons?i=tailwind" alt="Tailwind CSS"></a>
+  <a href="https://arcjet.com"><img src="https://img.shields.io/badge/Security-Arcjet-5C2D91" alt="Arcjet"></a>
+</p>
+
+---
+
+## ✨ Features
 
 - **Visual Flow Builder** - Drag-and-drop interface powered by React Flow
 - **Multi-Provider AI** - Support for OpenAI, Anthropic, and Google (Gemini)
@@ -17,7 +51,9 @@ Build powerful AI agents with drag-and-drop simplicity. Create , deploy, and man
 - **Streaming Responses** - Real-time AI output with Vercel AI SDK
 - **Monetization** - Polar SDK for subscriptions and payments
 
-## 📦 Tech Stack
+---
+
+## 🛠️ Tech Stack
 
 | Category | Technology |
 |----------|------------|
@@ -31,6 +67,8 @@ Build powerful AI agents with drag-and-drop simplicity. Create , deploy, and man
 | Flow Editor | React Flow (XYFlow) |
 | AI | Vercel AI SDK |
 | Security | Arcjet |
+
+---
 
 ## 🛠️ Getting Started
 
@@ -75,20 +113,15 @@ BETTER_AUTH_URL=http://localhost:3000
 INNGEST_EVENT_KEY=...
 INNGEST_SIGNING_KEY=...
 
-# Polar (Payments)
-POLAR_ACCESS_TOKEN=...
-NEXT_PUBLIC_POLAR_ORGANIZATION_ID=...
-
-# Arcjet (Security)  
-ARCJET_KEY=ajkey_...
-
 # AI Providers
 OPENAI_API_KEY=sk-...
 ANTHROPIC_API_KEY=sk-ant-...
 GOOGLE_GENERATIVE_AI_API_KEY=...
 ```
 
-## 📁 Project Structure
+---
+
+## 📂 Project Structure
 
 ```
 agentify/
@@ -107,6 +140,8 @@ agentify/
 └── public/                # Static assets
 ```
 
+---
+
 ## 🎨 Node Types
 
 | Node | Description |
@@ -120,6 +155,8 @@ agentify/
 | **Delay** | Pause execution |
 | **Variable** | Set/get variables |
 | **End** | Terminate workflow |
+
+---
 
 ## 🚢 Deployment
 
@@ -145,6 +182,8 @@ RUN npm run build
 CMD ["npm", "start"]
 ```
 
+---
+
 ## 📖 API Reference
 
 ### Execute Agent
@@ -159,7 +198,7 @@ Content-Type: application/json
 }
 ```
 
-Configure webhooks for Polar and other services in `src/app/api/webhooks`.
+---
 
 ## 🔒 Security
 
@@ -168,14 +207,16 @@ Configure webhooks for Polar and other services in `src/app/api/webhooks`.
 - Input validation and sanitization
 - Secure API routes with middleware
 
-## 📄 License
+---
 
-MIT License - see [LICENSE](LICENSE) for details.
-
-## 🤝 Contributing
+## 🤝 Contributing & License
 
 Contributions welcome! Please read our contributing guidelines first.
 
+MIT License - see [LICENSE](LICENSE) for details.
+
 ---
 
-Built with ❤️ using Next.js, Prisma, and React Flow
+<p align="center">
+  <i>Built with ❤️ using Next.js, Prisma, and React Flow</i>
+</p>
