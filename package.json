@@ -1,6 +1,7 @@
 {
   "name": "agentify",
   "version": "0.1.0",
+  "description": "Modern AI workflow automation platform with drag-and-drop simplicity, background jobs, and multi-LLM support.",
   "private": true,
   "scripts": {
     "dev": "next dev",
