@@ -1,290 +1,178 @@
-# 🤖 AI-VIBE-AUTOMATION-V1 | Agentify
+<div align="center">
 
-<p align="center">
-  <img src="https://img.shields.io/badge/AI--VIBE-AUTOMATION--V1-black?style=for-the-badge&logo=next.js&logoColor=white" alt="AI Vibe Project">
-  <br>
-  <b>Build powerful AI agents with drag-and-drop simplicity. Create, deploy, and manage custom AI workflows.</b>
-</p>
+# ⚙️ AI-VIBE-AUTOMATION-V1
 
-<p align="center">
-  <img src="https://img.shields.io/badge/version-1.0.0-purple" alt="Version">
-  <img src="https://img.shields.io/badge/Next.js-15-black?logo=next.js&logoColor=white" alt="Next.js">
-  <img src="https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript&logoColor=white" alt="TypeScript">
-  <img src="https://img.shields.io/badge/License-MIT-green" alt="License: MIT">
-</p>
+### **Visual AI Workflow Automation Platform**
+*Next.js 15 · React Flow · Inngest · Multi-LLM · Drag & Drop*
 
----
+[![Next.js](https://img.shields.io/badge/Next.js-15.0+-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org)
+[![React Flow](https://img.shields.io/badge/React_Flow-11.0+-FF0072?style=for-the-badge)](https://reactflow.dev)
+[![Inngest](https://img.shields.io/badge/Inngest-Jobs-5D5DFF?style=for-the-badge)](https://inngest.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
 
-## 🗺️ Quick Navigation
+**[🚀 Live Demo](https://ai-vibe-automation-v1.vercel.app)** · **[📖 Docs](#documentation)** · **[⭐ Star](https://github.com/mk-knight23/AI-VIBE-AUTOMATION-V1)**
 
-- [✨ Features](#-features)
-- [🛠️ Tech Stack](#%EF%B8%8F-tech-stack)
-- [🛠️ Getting Started](#%EF%B8%8F-getting-started)
-- [📁 Project Structure](#-project-structure)
-- [🎨 Node Types](#-node-types)
-- [🚢 Deployment](#-deployment)
-- [📖 API Reference](#-api-reference)
-- [🔒 Security](#-security)
+</div>
 
 ---
 
-## 🛠️ Engineered With
+## 🎯 Automate Anything With Visual Flows
 
-<p align="left">
-  <a href="https://nextjs.org"><img src="https://skillicons.dev/icons?i=nextjs" alt="Next.js"></a>
-  <a href="https://react.dev"><img src="https://skillicons.dev/icons?i=react" alt="React"></a>
-  <a href="https://prisma.io"><img src="https://skillicons.dev/icons?i=prisma" alt="Prisma"></a>
-  <a href="https://inngest.com"><img src="https://img.shields.io/badge/Jobs-Inngest-FF3E00" alt="Inngest"></a>
-  <a href="https://tailwindcss.com"><img src="https://skillicons.dev/icons?i=tailwind" alt="Tailwind CSS"></a>
-  <a href="https://arcjet.com"><img src="https://img.shields.io/badge/Security-Arcjet-5C2D91" alt="Arcjet"></a>
-</p>
+AI-VIBE-AUTOMATION-V1 is a **no-code/low-code AI workflow builder** — drag nodes onto a canvas, connect them, and create powerful automation workflows that run in the background via Inngest. Think n8n meets AI-native design.
+
+> **Pillar 4, Iteration 1** — The automation engine with drag-and-drop simplicity.
 
 ---
 
-## ✨ Features
+## ✨ Node Library
 
-- **Visual Flow Builder** - Drag-and-drop interface powered by React Flow
-- **Multi-Provider AI** - Support for OpenAI, Anthropic, and Google (Gemini)
-- **Background Jobs** - Inngest for reliable workflow execution and retries
-- **Enterprise Security** - Arcjet rate limiting and bot protection  
-- **Modern Auth** - BetterAuth for secure, modern authentication
-- **Streaming Responses** - Real-time AI output with Vercel AI SDK
-- **Monetization** - Polar SDK for subscriptions and payments
+### Trigger Nodes
+| Node | Description |
+|------|-------------|
+| ⏰ **Schedule** | Cron-based triggers (every hour, daily, etc.) |
+| 🔔 **Webhook** | HTTP webhook trigger |
+| 📧 **Email** | On new email (Gmail/Outlook) |
+| 💬 **Slack Message** | On Slack event |
+| 📁 **File Change** | On file system change |
+
+### Action Nodes
+| Node | Description |
+|------|-------------|
+| 🤖 **AI Node** | Call any LLM (Claude, GPT-4o, Gemini) |
+| 🌐 **API Node** | HTTP GET/POST to any endpoint |
+| 📤 **Email Send** | Send email via Resend/Sendgrid |
+| 💬 **Slack Send** | Post to Slack channels |
+| 🗄️ **Database** | Query/insert PostgreSQL |
+| 📊 **Google Sheets** | Read/write spreadsheet rows |
+| 🐙 **GitHub** | Create issues, PRs, releases |
+
+### Logic Nodes
+| Node | Description |
+|------|-------------|
+| 🔀 **If/Else** | Conditional branching |
+| 🔁 **Loop** | Iterate over arrays |
+| ⏳ **Delay** | Wait N seconds/minutes |
+| 🔄 **Merge** | Combine parallel branches |
+| ⚠️ **Error Handler** | Catch and handle failures |
 
 ---
 
-## 🛠️ Tech Stack
+## 🏗️ Architecture
 
-| Category | Technology |
-|----------|------------|
-| Framework | Next.js 15 (App Router) |
-| Language | TypeScript |
-| Database | PostgreSQL (Neon) with Prisma ORM |
-| Auth | BetterAuth |
-| Background Jobs | Inngest |
-| Payments | Polar SDK |
-| UI | shadcn/ui, Tailwind CSS |
-| Flow Editor | React Flow (XYFlow) |
-| AI | Vercel AI SDK |
-| Security | Arcjet |
+```
+src/
+├── app/
+│   ├── layout.tsx                # Providers (Auth, tRPC, Theme)
+│   ├── dashboard/page.tsx        # Workflow dashboard
+│   ├── builder/[id]/page.tsx     # Flow builder
+│   └── api/
+│       ├── inngest/route.ts      # Inngest webhook handler
+│       └── workflows/route.ts    # Workflow CRUD API
+├── components/
+│   ├── agent-builder/
+│   │   ├── AgentCanvas.tsx       # React Flow canvas
+│   │   ├── NodeSidebar.tsx       # Draggable node palette
+│   │   ├── SettingsPanel.tsx     # Node configuration panel
+│   │   └── nodes/
+│   │       ├── AINode.tsx        # LLM call node
+│   │       ├── APINode.tsx       # HTTP request node
+│   │       ├── StartNode.tsx     # Workflow trigger
+│   │       ├── EndNode.tsx       # Workflow terminal
+│   │       ├── IfElseNode.tsx    # Conditional branch
+│   │       └── OtherNodes.tsx    # Email, Slack, DB, etc.
+├── inngest/
+│   ├── client.ts                 # Inngest client setup
+│   ├── functions/
+│   │   ├── executeWorkflow.ts    # Main workflow executor
+│   │   ├── executeNode.ts        # Individual node runner
+│   │   └── handleError.ts        # Error recovery
+└── prisma/
+    └── schema.prisma             # Workflow, Node, Execution, Log
+```
 
 ---
 
-## 🛠️ Getting Started
+## 🔄 Workflow Execution
 
-### Prerequisites
+Workflows run as **Inngest background jobs** — reliable, retryable, with full execution history:
 
-- Node.js 18+
-- npm or pnpm
-- Neon Database (PostgreSQL)
-- Inngest (for background jobs)
-- Polar (for payments)
-- AI provider API keys (OpenAI, Anthropic, or Google)
+```typescript
+// inngest/functions/executeWorkflow.ts
+export const executeWorkflow = inngest.createFunction(
+  { id: 'execute-workflow', retries: 3 },
+  { event: 'workflow.trigger' },
+  async ({ event, step }) => {
+    const { workflowId, triggerData } = event.data
 
-### Installation
+    const workflow = await step.run('load-workflow', async () =>
+      db.workflow.findUnique({ where: { id: workflowId }, include: { nodes: true } })
+    )
+
+    const executionContext: ExecutionContext = { data: triggerData, variables: {} }
+
+    for (const node of topologicalSort(workflow.nodes)) {
+      const result = await step.run(`execute-node-${node.id}`, async () =>
+        executeNode(node, executionContext)
+      )
+      executionContext.variables[node.id] = result
+    }
+
+    return { success: true, executionId: workflow.id }
+  }
+)
+```
+
+---
+
+## 🚀 Quick Start
 
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/agentify.git
-cd agentify
-
-# Install dependencies
+git clone https://github.com/mk-knight23/AI-VIBE-AUTOMATION-V1.git
+cd AI-VIBE-AUTOMATION-V1
 npm install
-
-# Setup Prisma
-npx prisma generate
-npx prisma db push
-
-# Start the development server
-npm run dev
+cp .env.example .env.local
+npx prisma migrate dev
+npm run dev  # → http://localhost:3000
 ```
 
 ### Environment Variables
 
 ```env
-# Database (Neon/Postgres)
 DATABASE_URL=postgresql://...
-
-# Auth (BetterAuth)
-BETTER_AUTH_SECRET=...
-BETTER_AUTH_URL=http://localhost:3000
-
-# Inngest
+ANTHROPIC_API_KEY=sk-ant-...
+OPENAI_API_KEY=sk-...
+GOOGLE_AI_API_KEY=...
 INNGEST_EVENT_KEY=...
 INNGEST_SIGNING_KEY=...
-
-# AI Providers
-OPENAI_API_KEY=sk-...
-ANTHROPIC_API_KEY=sk-ant-...
-GOOGLE_GENERATIVE_AI_API_KEY=...
+RESEND_API_KEY=re_...
+SLACK_BOT_TOKEN=xoxb-...
 ```
 
 ---
 
-## 📁 Project Structure
+## 🎯 Example Workflows
 
-<details>
-<summary>View Detailed Directory Map</summary>
+### 1. AI Email Digest
+```
+[Cron: 9AM daily] → [Gmail: Fetch unread] → [AI: Summarize] → [Email: Send digest]
+```
 
+### 2. GitHub Auto-Reviewer
 ```
-agentify/
-├── prisma/                # Database schema and migrations
-├── src/
-│   ├── app/               # Next.js App Router
-│   │   ├── (auth)/        # BetterAuth pages
-│   │   ├── (dashboard)/   # Dashboard layout
-│   │   └── api/           # API routes (Inngest, Auth, Webhooks)
-│   ├── actions/           # Server actions (Workflows, Payments)
-│   ├── components/
-│   │   ├── agent-builder/ # React Flow components
-│   │   └── ui/            # shadcn components
-│   ├── lib/               # Utilities (Prisma, Inngest, AI, Auth)
-│   └── types/             # TypeScript types
-└── public/                # Static assets
+[Webhook: PR opened] → [GitHub: Get diff] → [AI: Review code] → [GitHub: Post comment]
 ```
-</details>
+
+### 3. Slack Alert Bot
+```
+[Cron: Every 5min] → [API: Check metrics] → [If: Error rate > 5%] → [Slack: Alert #ops]
+```
 
 ---
 
-## 🎨 Node Types
+<div align="center">
 
-<details>
-<summary>View Available Workflow Nodes</summary>
+**Built with ⚙️ by [Kazi Musharraf](https://mkazi.live)**
 
-| Node | Description |
-|------|-------------|
-| **Start** | Entry point with manual/webhook/scheduled triggers |
-| **AI** | LLM processing (OpenAI, Anthropic, Google) |
-| **API** | HTTP requests (GET, POST, PUT, DELETE) |
-| **If/Else** | Conditional branching |
-| **Loop** | Iteration over collections or counts |
-| **Code** | JavaScript execution |
-| **Delay** | Pause execution |
-| **Variable** | Set/get variables |
-| **End** | Terminate workflow |
+*Part of the [AI-VIBE Ecosystem](https://github.com/mk-knight23/AI-VIBE-ECOSYSTEM) · Built in India 🇮🇳*
 
-</details>
-
----
-
-## 🚢 Deployment
-
-<details>
-<summary>Deployment Guide (Vercel & Docker)</summary>
-
-### Vercel (Recommended)
-
-```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Deploy
-vercel
-```
-
-### Docker
-
-```dockerfile
-FROM node:18-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
-CMD ["npm", "start"]
-```
-</details>
-
----
-
-## 📖 API Reference
-
-<details>
-<summary>REST API Documentation</summary>
-
-### Execute Agent
-
-```http
-POST /api/execute
-Content-Type: application/json
-
-{
-  "agentId": "agent_id_here",
-  "message": "User input message"
-}
-```
-</details>
-
----
-
-## 🔒 Security
-
-- Rate limiting via Arcjet (configurable per tier)
-- Bot detection and blocking
-- Input validation and sanitization
-- Secure API routes with middleware
-
----
-
-## 🚀 Call to Action
-
-- **Star this repo** if you find it useful!
-- **Follow for updates** on the AI-VIBE Ecosystem.
-- **Contribute** by opening issues or PRs.
-
----
-
-## 🤝 Contributing & License
-
-Contributions welcome! Please read our contributing guidelines first.
-
-MIT License - see [LICENSE](LICENSE) for details.
-
----
-
-<p align="center">
-  <i>Built with ❤️ using Next.js, Prisma, and React Flow</i>
-</p>
-
-
-
-## 🎯 Problem Solved
-
-This repository provides a streamlined approach to modern development needs, enabling developers to build robust applications with minimal complexity and maximum efficiency.
-
-## 🏗️ Architecture
-
-```
-```
-
-## 🚀 Quick Start
-
-```bash
-# Clone the repository
-git clone https://github.com/mk-knight23/AI-VIBE-AUTOMATION-V1
-cd AI-VIBE-AUTOMATION-V1
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-```
-
-## 🌐 Deployment
-
-### Live URLs
-
-| Platform | URL |
-|----------|-----|
-| Vercel | [Deployed Link] |
-| GitHub Pages | [Deployed Link] |
-
-
-## 📄 License
-
-MIT License - see LICENSE file for details
-
----
-
-Built with ❤️ by mk-knight23
+</div>
